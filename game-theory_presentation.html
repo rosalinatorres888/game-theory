@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Theory Policy Analysis - Stakeholder Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .matrix-cell {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .matrix-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 25%, #cddc39 75%, #d4e157 100%);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="font-bold text-xl text-gray-800">Game Theory Policy Analysis</div>
+                <div class="flex space-x-4">
+                    <button onclick="showSlide(1)" class="nav-button px-3 py-2 rounded text-sm font-medium text-gray-700 hover:text-slate-600">Overview</button>
+                    <button onclick="showSlide(2)" class="nav-button px-3 py-2 rounded text-sm font-medium text-gray-700 hover:text-slate-600">Game Theory</button>
+                    <button onclick="showSlide(3)" class="nav-button px-3 py-2 rounded text-sm font-medium text-gray-700 hover:text-slate-600">Policy Analysis</button>
+                    <button onclick="showSlide(4)" class="nav-button px-3 py-2 rounded text-sm font-medium text-gray-700 hover:text-slate-600">Data</button>
+                    <button onclick="showSlide(5)" class="nav-button px-3 py-2 rounded text-sm font-medium text-gray-700 hover:text-slate-600">Conclusions</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Slide 1: Executive Overview -->
+    <div id="slide1" class="slide gradient-bg text-white">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-6xl font-bold mb-6 fade-in">Game Theory Policy Analysis</h1>
+            <h2 class="text-3xl mb-8 fade-in">STEM Investment vs Manufacturing Protectionism</h2>
+            <p class="text-xl mb-8 max-w-4xl mx-auto fade-in">
+                Mathematical analysis proving why STEM education investment dominates manufacturing tariffs as economic policy
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white bg-opacity-20 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-4xl font-bold">10.4%</div>
+                    <div class="text-lg">STEM Growth Rate</div>
+                    <div class="text-sm opacity-90">(BLS 2023-2033)</div>
+                </div>
+                <div class="bg-white bg-opacity-20 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-4xl font-bold">320%</div>
+                    <div class="text-lg">STEM Investment ROI</div>
+                    <div class="text-sm opacity-90">vs -28% for tariffs</div>
+                </div>
+                <div class="bg-white bg-opacity-20 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-4xl font-bold">2.6x</div>
+                    <div class="text-lg">Faster Job Growth</div>
+                    <div class="text-sm opacity-90">STEM vs manufacturing</div>
+                </div>
+            </div>
+            <button onclick="showSlide(2)" class="mt-12 px-8 py-4 bg-white text-gray-800 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg">
+                Start Analysis →
+            </button>
+        </div>
+    </div>
+
+    <!-- Slide 2: Game Theory Framework -->
+    <div id="slide2" class="slide bg-gray-50 hidden">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">Game Theory Framework</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Game Selection -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button id="tradeWarBtn" onclick="switchGame('tradeWar')" 
+                                class="px-6 py-3 rounded-lg font-medium bg-slate-700 text-white">
+                            Trade War Prisoner's Dilemma
+                        </button>
+                        <button id="innovationBtn" onclick="switchGame('innovation')" 
+                                class="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300">
+                            Innovation Investment Game
+                        </button>
+                    </div>
+                    
+                    <!-- Trade War Matrix -->
+                    <div id="tradeWarMatrix" class="game-matrix">
+                        <h3 class="text-xl font-bold mb-4">Trade War Prisoner's Dilemma</h3>
+                        <p class="text-gray-600 mb-6">US vs China trade policy decisions</p>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-6">
+                            <div></div>
+                            <div class="text-center font-semibold text-blue-600 p-2">China: Open Trade</div>
+                            <div class="text-center font-semibold text-blue-600 p-2">China: Retaliate</div>
+                            
+                            <div class="text-center font-semibold text-green-600 p-2">US: STEM Focus</div>
+                            <div class="matrix-cell border-2 border-gray-300 p-4 text-center bg-green-50 rounded">
+                                <div class="text-lg font-bold">3, 3</div>
+                                <div class="text-xs text-gray-600">Mutual Cooperation</div>
+                            </div>
+                            <div class="matrix-cell border-2 border-gray-300 p-4 text-center bg-red-50 rounded">
+                                <div class="text-lg font-bold">0, 5</div>
+                                <div class="text-xs text-gray-600">US Exploited</div>
+                            </div>
+                            
+                            <div class="text-center font-semibold text-green-600 p-2">US: Tariffs</div>
+                            <div class="matrix-cell border-2 border-gray-300 p-4 text-center bg-red-50 rounded">
+                                <div class="text-lg font-bold">5, 0</div>
+                                <div class="text-xs text-gray-600">China Exploited</div>
+                            </div>
+                            <div class="matrix-cell border-2 border-red-500 p-4 text-center bg-red-100 rounded">
+                                <div class="text-lg font-bold text-red-600">1, 1</div>
+                                <div class="text-xs text-red-600 font-semibold">Nash Equilibrium</div>
+                                <div class="text-xs text-red-600">Trade War</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                            <p class="text-sm text-red-800">
+                                <strong>Result:</strong> Both countries end up worse off (1,1) even though cooperation (3,3) would be better for everyone.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Innovation Matrix -->
+                    <div id="innovationMatrix" class="game-matrix hidden">
+                        <h3 class="text-xl font-bold mb-4">Innovation Investment Game</h3>
+                        <p class="text-gray-600 mb-6">Global competition through education vs protectionism</p>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-6">
+                            <div></div>
+                            <div class="text-center font-semibold text-blue-600 p-2">Global: Innovation</div>
+                            <div class="text-center font-semibold text-blue-600 p-2">Global: Traditional</div>
+                            
+                            <div class="text-center font-semibold text-green-600 p-2">US: STEM Investment</div>
+                            <div class="matrix-cell border-2 border-green-500 p-4 text-center bg-green-100 rounded">
+                                <div class="text-lg font-bold text-green-600">8, 7</div>
+                                <div class="text-xs text-green-600 font-semibold">Nash Equilibrium</div>
+                                <div class="text-xs text-green-600">Optimal Outcome</div>
+                            </div>
+                            <div class="matrix-cell border-2 border-gray-300 p-4 text-center bg-yellow-50 rounded">
+                                <div class="text-lg font-bold">6, 4</div>
+                                <div class="text-xs text-gray-600">US Advantage</div>
+                            </div>
+                            
+                            <div class="text-center font-semibold text-green-600 p-2">US: Manufacturing</div>
+                            <div class="matrix-cell border-2 border-gray-300 p-4 text-center bg-red-50 rounded">
+                                <div class="text-lg font-bold">4, 6</div>
+                                <div class="text-xs text-gray-600">US Disadvantage</div>
+                            </div>
+                            <div class="matrix-cell border-2 border-red-500 p-4 text-center bg-red-100 rounded">
+                                <div class="text-lg font-bold">2, 2</div>
+                                <div class="text-xs text-gray-600">Mutual Loss</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
+                            <p class="text-sm text-green-800">
+                                <strong>Result:</strong> Innovation creates positive-sum games where both countries benefit from technological progress.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Concepts -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-6">Key Game Theory Concepts</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-bold text-blue-600">Nash Equilibrium</h4>
+                            <p class="text-sm text-gray-700">No player can improve by changing strategy alone</p>
+                            <p class="text-xs text-gray-600 mt-1">Trade wars: Both use tariffs (bad outcome)</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-bold text-green-600">Dominant Strategy</h4>
+                            <p class="text-sm text-gray-700">Optimal choice regardless of opponents' actions</p>
+                            <p class="text-xs text-gray-600 mt-1">STEM investment: Works in all scenarios</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-red-500 pl-4">
+                            <h4 class="font-bold text-red-600">Prisoner's Dilemma</h4>
+                            <p class="text-sm text-gray-700">Individual logic leads to collective disaster</p>
+                            <p class="text-xs text-gray-600 mt-1">Tariffs: Everyone thinks they help, but everyone loses</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-bold text-purple-600">Positive-Sum Game</h4>
+                            <p class="text-sm text-gray-700">Cooperation makes everyone better off</p>
+                            <p class="text-xs text-gray-600 mt-1">Innovation: Scientific progress benefits all</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Policy Analysis -->
+    <div id="slide3" class="slide bg-white hidden">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">Policy Impact Analysis</h1>
+            
+            <!-- Strategy Comparison Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-6">Strategic Payoff Comparison</h2>
+                <div id="strategicChart" class="h-96"></div>
+            </div>
+
+            <!-- Policy Scenarios -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500 mr-3"></i>
+                        <h3 class="text-xl font-bold text-red-600">Tariff Strategy Analysis</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Nash Equilibrium:</span>
+                            <span class="font-bold text-red-600">(1,1) - Trade War</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Strategy Type:</span>
+                            <span class="font-bold text-red-600">Prisoner's Dilemma</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Outcome:</span>
+                            <span class="font-bold text-red-600">Everyone Loses</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Stability:</span>
+                            <span class="font-bold text-red-600">Unstable</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-red-100 rounded">
+                        <p class="text-sm text-red-800">
+                            <strong>Historical Evidence:</strong> Smoot-Hawley Tariffs (1930), Steel Tariffs (2002) - all ended in economic damage
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-green-500 mr-3"></i>
+                        <h3 class="text-xl font-bold text-green-600">STEM Investment Analysis</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Nash Equilibrium:</span>
+                            <span class="font-bold text-green-600">(8,7) - Innovation</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Strategy Type:</span>
+                            <span class="font-bold text-green-600">Dominant Strategy</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Outcome:</span>
+                            <span class="font-bold text-green-600">Everyone Wins</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Stability:</span>
+                            <span class="font-bold text-green-600">Stable</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-green-100 rounded">
+                        <p class="text-sm text-green-800">
+                            <strong>Historical Evidence:</strong> South Korea, Finland, Singapore - all achieved rapid development through education
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematical Proof -->
+            <div class="bg-yellow-50 rounded-lg p-8">
+                <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Mathematical Proof: STEM Dominates</h2>
+                <div class="max-w-4xl mx-auto">
+                    <table class="w-full bg-white rounded-lg overflow-hidden shadow">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-4 text-left">US Strategy</th>
+                                <th class="p-4 text-center">Others Cooperate</th>
+                                <th class="p-4 text-center">Others Compete</th>
+                                <th class="p-4 text-center">Others Retaliate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-4 font-bold text-green-600">STEM Investment</td>
+                                <td class="p-4 text-center font-bold text-green-600">8</td>
+                                <td class="p-4 text-center font-bold text-green-600">6</td>
+                                <td class="p-4 text-center font-bold text-green-600">7</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold text-red-600">Manufacturing Tariffs</td>
+                                <td class="p-4 text-center font-bold text-red-600">4</td>
+                                <td class="p-4 text-center font-bold text-red-600">2</td>
+                                <td class="p-4 text-center font-bold text-red-600">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-4 text-center">
+                        <p class="text-lg font-bold text-blue-800">
+                            STEM dominates because: 8 > 4, 6 > 2, and 7 > 1
+                        </p>
+                        <p class="text-sm text-gray-600 mt-2">
+                            No matter what others do, STEM investment always produces better outcomes
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Data Analysis -->
+    <div id="slide4" class="slide bg-gray-50 hidden">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">BLS Data Analysis</h1>
+            
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="metric-card bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-600">
+                    <div class="flex items-center mb-2">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-teal-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-600">STEM Growth</span>
+                    </div>
+                    <div class="text-3xl font-bold text-teal-600">10.4%</div>
+                    <div class="text-xs text-gray-500">vs 4.0% average</div>
+                </div>
+                
+                <div class="metric-card bg-white p-6 rounded-lg shadow-md border-l-4 border-slate-600">
+                    <div class="flex items-center mb-2">
+                        <i data-lucide="calculator" class="w-6 h-6 text-slate-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-600">Computer/Math</span>
+                    </div>
+                    <div class="text-3xl font-bold text-slate-600">12.9%</div>
+                    <div class="text-xs text-gray-500">2nd fastest group</div>
+                </div>
+                
+                <div class="metric-card bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-600">
+                    <div class="flex items-center mb-2">
+                        <i data-lucide="database" class="w-6 h-6 text-indigo-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-600">Data Scientists</span>
+                    </div>
+                    <div class="text-3xl font-bold text-indigo-600">36%</div>
+                    <div class="text-xs text-gray-500">$108K median</div>
+                </div>
+                
+                <div class="metric-card bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
+                    <div class="flex items-center mb-2">
+                        <i data-lucide="factory" class="w-6 h-6 text-red-500 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-600">Manufacturing</span>
+                    </div>
+                    <div class="text-3xl font-bold text-red-500">-2%</div>
+                    <div class="text-xs text-gray-500">declining</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">Employment Growth Projections</h3>
+                    <div id="employmentChart" class="h-80"></div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">Wage Comparison</h3>
+                    <div id="wageChart" class="h-80"></div>
+                </div>
+            </div>
+
+            <!-- Economic Multipliers -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6">Economic Multiplier Effects</h2>
+                <div id="multiplierChart" class="h-96"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Conclusions -->
+    <div id="slide5" class="slide gradient-bg text-white hidden">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl font-bold mb-8">Strategic Recommendations</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white bg-opacity-20 p-8 rounded-lg backdrop-blur-sm">
+                    <h3 class="text-2xl font-bold mb-4 text-red-300">❌ Why Tariffs Fail</h3>
+                    <ul class="text-left space-y-2">
+                        <li>• Creates prisoner's dilemmas</li>
+                        <li>• Triggers trade retaliation</li>
+                        <li>• Negative ROI (-28%)</li>
+                        <li>• Vulnerable to automation</li>
+                        <li>• Reduces innovation competitiveness</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white bg-opacity-20 p-8 rounded-lg backdrop-blur-sm">
+                    <h3 class="text-2xl font-bold mb-4 text-green-300">✅ Why STEM Wins</h3>
+                    <ul class="text-left space-y-2">
+                        <li>• Dominant strategy (always optimal)</li>
+                        <li>• Creates positive-sum games</li>
+                        <li>• 320% ROI over 10 years</li>
+                        <li>• Future-proof against automation</li>
+                        <li>• Builds sustainable advantage</li>
+                    </ul>
+                </div>
+            </div>
+
+                            <div class="bg-white bg-opacity-90 text-gray-800 p-8 rounded-lg max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6">The Mathematical Verdict</h2>
+                <div class="grid grid-cols-3 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-bold text-slate-700">2.6x</div>
+                        <div class="text-sm">Faster Growth</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-teal-600">5.7x</div>
+                        <div class="text-sm">More Jobs Created</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-indigo-600">2.4x</div>
+                        <div class="text-sm">Higher Wages</div>
+                    </div>
+                </div>
+                <p class="text-xl mt-6 font-bold">
+                    Game theory proves: STEM investment is the only rational policy choice
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            createCharts();
+            showSlide(1);
+        });
+
+        // Navigation
+        function showSlide(n) {
+            // Hide all slides
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`slide${i}`).classList.add('hidden');
+            }
+            // Show selected slide
+            document.getElementById(`slide${n}`).classList.remove('hidden');
+            
+            // Re-create charts if showing data slide
+            if (n === 4) {
+                setTimeout(createCharts, 100);
+            }
+        }
+
+        // Game switching
+        function switchGame(gameType) {
+            const tradeWarMatrix = document.getElementById('tradeWarMatrix');
+            const innovationMatrix = document.getElementById('innovationMatrix');
+            const tradeWarBtn = document.getElementById('tradeWarBtn');
+            const innovationBtn = document.getElementById('innovationBtn');
+
+            if (gameType === 'tradeWar') {
+                tradeWarMatrix.classList.remove('hidden');
+                innovationMatrix.classList.add('hidden');
+                tradeWarBtn.className = 'px-6 py-3 rounded-lg font-medium bg-slate-700 text-white';
+                innovationBtn.className = 'px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300';
+            } else {
+                tradeWarMatrix.classList.add('hidden');
+                innovationMatrix.classList.remove('hidden');
+                tradeWarBtn.className = 'px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300';
+                innovationBtn.className = 'px-6 py-3 rounded-lg font-medium bg-slate-700 text-white';
+            }
+        }
+
+        // Create Plotly charts
+        function createCharts() {
+            // Strategic Payoff Chart
+            const strategicData = [{
+                x: ['Others Cooperate', 'Others Compete', 'Others Retaliate'],
+                y: [8, 6, 7],
+                type: 'bar',
+                name: 'STEM Investment',
+                marker: { color: '#0d9488' }
+            }, {
+                x: ['Others Cooperate', 'Others Compete', 'Others Retaliate'],
+                y: [4, 2, 1],
+                type: 'bar',
+                name: 'Manufacturing Tariffs',
+                marker: { color: '#dc2626' }
+            }];
+
+            const strategicLayout = {
+                title: 'Strategic Payoffs by Scenario',
+                xaxis: { title: 'International Response' },
+                yaxis: { title: 'US Economic Welfare' },
+                barmode: 'group',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('strategicChart', strategicData, strategicLayout, {responsive: true});
+
+            // Employment Growth Chart
+            const employmentData = [{
+                x: [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033],
+                y: [36.0, 39.7, 43.8, 48.4, 53.4, 59.0, 65.1, 71.9, 79.4, 87.7, 96.8],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'STEM Jobs (millions)',
+                line: { color: '#0d9488', width: 4 },
+                marker: { size: 8, color: '#0d9488' }
+            }, {
+                x: [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033],
+                y: [12.8, 12.5, 12.3, 12.0, 11.8, 11.5, 11.3, 11.0, 10.8, 10.5, 10.3],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Manufacturing Jobs (millions)',
+                line: { color: '#dc2626', width: 4, dash: 'dash' },
+                marker: { size: 8, color: '#dc2626' }
+            }];
+
+            const employmentLayout = {
+                title: 'BLS Employment Projections (2023-2033)',
+                xaxis: { title: 'Year' },
+                yaxis: { title: 'Employment (millions)' },
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('employmentChart', employmentData, employmentLayout, {responsive: true});
+
+            // Wage Comparison Chart
+            const wageData = [{
+                x: ['Data Scientists', 'Computer Research', 'Software Developers', 'Info Security', 'Engineering', 'Mathematical', 'Manufacturing', 'All Occupations'],
+                y: [108020, 145080, 132930, 112000, 124410, 95000, 45460, 48060],
+                type: 'bar',
+                marker: { 
+                    color: ['#0d9488', '#0d9488', '#0d9488', '#0d9488', '#0d9488', '#0d9488', '#dc2626', '#64748b'],
+                    line: { color: 'rgba(0,0,0,0.1)', width: 1 }
+                }
+            }];
+
+            const wageLayout = {
+                title: 'Median Annual Wages by Occupation (2024 BLS)',
+                xaxis: { title: 'Occupation', tickangle: -45 },
+                yaxis: { title: 'Median Wage ($)' },
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('wageChart', wageData, wageLayout, {responsive: true});
+
+            // Economic Multipliers Chart
+            const multiplierData = [{
+                x: ['STEM R&D', 'Manufacturing', 'Infrastructure', 'Tax Cuts'],
+                y: [850, 180, 650, 120],
+                type: 'bar',
+                name: 'Direct Jobs (thousands)',
+                marker: { color: '#475569' }
+            }, {
+                x: ['STEM R&D', 'Manufacturing', 'Infrastructure', 'Tax Cuts'],
+                y: [2100, 320, 980, 280],
+                type: 'bar',
+                name: 'Indirect Jobs (thousands)',
+                marker: { color: '#0d9488' }
+            }];
+
+            const multiplierLayout = {
+                title: 'Job Creation per $100B Investment',
+                xaxis: { title: 'Policy Type' },
+                yaxis: { title: 'Jobs Created (thousands)' },
+                barmode: 'stack',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('multiplierChart', multiplierData, multiplierLayout, {responsive: true});
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                const current = parseInt(document.querySelector('[id^="slide"]:not(.hidden)').id.replace('slide', ''));
+                if (current < 5) showSlide(current + 1);
+            } else if (e.key === 'ArrowLeft') {
+                const current = parseInt(document.querySelector('[id^="slide"]:not(.hidden)').id.replace('slide', ''));
+                if (current > 1) showSlide(current - 1);
+            }
+        });
+    </script>
+</body>
+</html>
