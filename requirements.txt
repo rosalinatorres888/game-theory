@@ -1,0 +1,66 @@
+# Game Theory Policy Analysis - Python Dependencies
+# =====================================================
+
+# Core Data Science Libraries
+pandas>=1.5.3
+numpy>=1.24.3
+scipy>=1.10.1
+
+# Machine Learning
+scikit-learn>=1.2.2
+joblib>=1.2.0
+
+# Data Visualization
+plotly>=5.14.1
+matplotlib>=3.7.1
+seaborn>=0.12.2
+
+# Web Framework (for interactive dashboards)
+streamlit>=1.22.0
+dash>=2.10.1
+dash-bootstrap-components>=1.4.1
+
+# Game Theory and Economic Analysis
+nashpy>=0.0.35        # Nash equilibrium calculation
+scipy>=1.10.1         # Optimization algorithms
+
+# Statistical Analysis
+statsmodels>=0.14.0
+pingouin>=0.5.3       # Statistical tests
+
+# Data Processing
+openpyxl>=3.1.2       # Excel file handling
+xlsxwriter>=3.1.0     # Excel export
+requests>=2.31.0      # API calls for data sources
+
+# Development and Testing
+pytest>=7.3.1
+black>=23.3.0         # Code formatting
+flake8>=6.0.0         # Linting
+jupyter>=1.0.0        # Notebook support
+ipykernel>=6.23.0
+
+# Documentation
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.2.0
+
+# Interactive Widgets
+ipywidgets>=8.0.6
+plotly-dash>=2.10.1
+
+# Performance
+numba>=0.57.0         # JIT compilation for performance
+
+# Optional: Advanced ML Libraries
+# xgboost>=1.7.5      # Gradient boosting (uncomment if needed)
+# lightgbm>=3.3.5     # Light gradient boosting (uncomment if needed)
+# tensorflow>=2.12.0  # Deep learning (uncomment if needed)
+
+# Version constraints for stability
+python-dateutil>=2.8.0
+pytz>=2023.3
+six>=1.16.0
+
+# For government data APIs
+sodapy>=2.1.0         # Socrata Open Data API
+fredapi>=0.5.1        # Federal Reserve Economic Data

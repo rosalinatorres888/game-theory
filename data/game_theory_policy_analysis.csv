@@ -1,0 +1,12 @@
+Year,Scenario,US_Payoff,China_Payoff,GDP_Growth,Jobs_Created,Innovation_Index
+2023,Baseline_Current_Policy,3.0,3.0,2.1,1.2,72.4
+2024,STEM_Investment_High,8.0,7.0,3.8,2.8,84.2
+2024,Manufacturing_Protection_High,2.0,2.0,0.8,-0.3,58.1
+2025,Trade_War_Escalation,1.0,1.0,-2.1,-1.8,52.3
+2025,Innovation_Cooperation,8.5,8.0,4.2,3.1,87.5
+2025,Protectionist_Response,1.5,1.5,-1.5,-1.2,54.7
+2024,Massachusetts_Model,8.2,7.5,3.5,2.5,83.8
+2023,Finland_Education_Strategy,7.8,7.2,3.2,2.1,81.4
+2025,South_Korea_STEM_Focus,8.1,7.8,3.9,2.9,85.1
+2025,Argentina_Import_Substitution,1.2,1.0,-2.8,-2.1,48.9
+2024,Singapore_Innovation_Hub,8.3,7.9,4.1,3.0,88.2
